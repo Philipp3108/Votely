@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Feedback</title>
+</head>
+<body>
+    <span class="mt-12 flex justify-center text-3xl">Share your feedback</span>
+    <span class="mt-[10vh] flex justify-center text-xl text-gray-500">Rate your experience</span>
+    <form method="post">
+        <div class="flex justify-center gap-4 mt-2">
+            <label class="border rounded-lg p-4 cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="rating" value="3" class="hidden peer" required>
+                <div class="text-4xl peer-checked:scale-110 transition"><img class="object-obtain w-10 flex justify-center" src="{{ url_for('static', filename='good.png') }}" alt="Happy Emoji"></div>
+                <p class="text-sm text-center mt-1 peer-checked:font-bold">Good</p>
+            </label>
+
+            <label class="border rounded-lg p-4 cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="rating" value="2" class="hidden peer" required>
+                <div class="text-4xl peer-checked:scale-110 transition"><img class="object-obtain w-10 flex justify-center" src="{{ url_for('static', filename='medium.png') }}" alt="Medium Emoji"></div>
+                <p class="text-sm text-center mt-1 peer-checked:font-bold">Okay</p>
+            </label>
+
+            <label class="border rounded-lg p-4 cursor-pointer hover:bg-gray-100">
+                <input type="radio" name="rating" value="1" class="hidden peer" required>
+                <div class="text-4xl peer-checked:scale-110 transition"><img class="object-obtain w-10 flex justify-center" src="{{ url_for('static', filename='bad.png') }}" alt="Sad Emoji"></div>
+                <p class="text-sm text-center mt-1 peer-checked:font-bold">Bad</p>
+            </label>
+        </div>
+        <textarea
+            name="comment"
+            rows="3"
+            placeholder="Anything else you'd like to share? (optional)"
+            class="block mx-auto mt-5 w-72 rounded-lg border border-gray-300
+                    px-4 py-2 text-sm resize-none
+                    placeholder-gray-400
+                    focus:border-gray-500 focus:ring-2 focus:ring-gray-200
+                    outline-none transition"></textarea>
+        <input type="submit" value="Submit" class="bg-blue-500 p-2 px-5 text-white rounded-full block mx-auto mt-10">
+    </form>
+    <footer class="fixed bottom-2 w-full flex justify-center">
+        <span class="text-gray-400">
+            This form is powered by <a href="../" class="text-gray-500 font-medium">Votely</a>
+        </span>
+    </footer>
+</body>
+</html>

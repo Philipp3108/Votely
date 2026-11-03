@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Votely Login
+{% endblock %}
+{% block main %}
+    <form action="/login" class="flex flex-col gap-3 items-center mt-[20vh]" method="post">
+        <input name="email" type="email" class="rounded p-2 border" placeholder="Email" required>
+        <input name="password" type="password" class="rounded p-2 border" placeholder="Password" required>
+        <input type="submit" class="rounded p-2 text-gray-900 bg-green-400" value="Login" />
+    </form>
+    <p class="mt-8 text-sm text-gray-400 flex justify-center">Don't have an account? <a href="/register" class="ml-1 underline">Register</a></p>
+{% endblock %}

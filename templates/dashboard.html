@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+    <div class="px-4 md:px-6 lg:px-8">
+        <p class="text-3xl md:text-4xl text-white text-center mt-8">Dashboard</p>
+        <p class="text-base md:text-lg text-gray-400 text-center mt-4">See your feedback</p>
+
+        <div class="mt-10 md:mt-12 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="border border-gray-700 shadow-lg p-4 md:p-4 rounded-lg bg-gray-800">
+                    <p class="text-lg text-white text-center">Total Votes</p>
+                    <p class="text-md mt-2 text-white text-center">{{ data.total_votes }}</p>
+                </div>
+
+                <div class="border border-gray-700 shadow-lg p-4 md:p-4 rounded-lg bg-gray-800">
+                    <p class="text-lg text-white text-center">Last 24h</p>
+                    <p class="text-md mt-2 text-white text-center">{{ data.last_24h }}</p>
+                </div>
+
+                <div class="border border-gray-700 shadow-lg p-4 md:p-4 rounded-lg bg-gray-800">
+                    <p class="text-lg text-white text-center">Last 7d</p>
+                    <p class="text-md mt-2 text-white text-center">{{ data.last_7d }}</p>
+                </div>
+
+                <div class="border border-gray-700 shadow-lg p-4 md:p-4 rounded-lg bg-gray-800">
+                    <p class="text-lg text-white text-center">Last 1y</p>
+                    <p class="text-md mt-2 text-white text-center">{{ data.last_1y }}</p>
+                </div>  
+            </div>
+        </div>
+
+        <div class="mt-10 md:mt-12 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div class="h-60 sm:h-64 md:h-72 border border-gray-800 bg-gray-900 rounded-lg p-4">
+                    <canvas id="line_chart" class="w-full h-full"></canvas>
+                </div>
+                <div class="h-60 sm:h-64 md:h-72 border border-gray-800 bg-gray-900 rounded-lg p-4 flex justify-center">
+                    <canvas id="pie_chart" class="w-full h-full"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-10 md:mt-12 max-w-6xl mx-auto border border-gray-700 shadow-lg p-2 rounded-lg bg-gray-800 text-white">
+            <table class="table-fixed w-full">
+                <thead>
+                    <tr>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vote in table_votes %}
+                        <tr>
+                            <td class="text-center">{{ vote[0] }}</td>
+                            <td class="text-center truncate">{{ vote[1] }}</td>
+                            <td class="text-center">{{ vote[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td><a class="mt-1 text-white text-md flex justify-center underline" href="/dashboard/votes">Show all</a></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="mt-6 md:mt-8 max-w-3xl mx-auto rounded-2xl bg-gray-800 border border-gray-700 shadow-xl p-5 space-y-6">
+            <p class="text-white text-lg font-semibold text-center">
+                Share your form
+            </p>
+
+            <div class="bg-gray-900 rounded-xl p-4 space-y-4">
+                <p class="text-gray-400 text-sm text-center">Public link</p>
+
+                <div class="flex flex-col sm:flex-row gap-3 items-center">
+                <input
+                    id="publicLink"
+                    value="http://{{url}}/f/{{id}}"
+                    readonly
+                    class="w-full bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 text-sm"
+                >
+
+                <button
+                    onclick="copyTextFromInput('publicLink');"
+                    class="px-4 py-2 rounded-lg bg-white text-gray-900 text-sm font-medium hover:bg-gray-200 transition">
+                    Copy
+                </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-xl p-4 space-y-4">
+                <p class="text-gray-400 text-sm text-center">On-site link</p>
+
+                <div class="flex flex-col sm:flex-row gap-3 items-center">
+                <input
+                    id="onsiteLink"
+                    value="http://{{url}}/s/{{id}}"
+                    readonly
+                    class="w-full bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 text-sm"
+                >
+
+                <button
+                    onclick="copyTextFromInput('onsiteLink');"
+                    class="px-4 py-2 rounded-lg bg-white text-gray-900 text-sm font-medium hover:bg-gray-200 transition">
+                    Copy
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function copyTextFromInput(inputId) {
+            const input = document.getElementById(inputId);
+            const text = input.value;
+
+            if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text)
+                .then(() => console.log("Copied!"))
+                .catch(() => fallbackCopy(input));
+            } else {
+            fallbackCopy(input);
+            }
+        }
+
+        function fallbackCopy(input) {
+            input.focus();
+            input.select();
+            input.setSelectionRange(0, input.value.length);
+
+            const ok = document.execCommand("copy");
+            console.log(ok ? "Copied (fallback)!" : "Copy failed (fallback).");
+        }
+        
+        const line_chart = document.getElementById('line_chart');
+
+        new Chart(line_chart, {
+            type: 'line',
+            data: {
+            labels: [
+                {% for label in line_chart.labels %}
+                "{{ label }}",
+                {% endfor %}
+            ],
+            datasets: [{
+                label: '# of Votes',
+                data: [
+                {% for number in line_chart.numbers %}
+                    {{ number }},
+                {% endfor %}
+                ],
+                borderWidth: 1
+            }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        const pie_chart = document.getElementById('pie_chart');
+
+        new Chart(pie_chart, {
+            type: 'pie',
+            data: {
+            labels: [
+                {% for label in pie_chart.labels %}
+                "{{ label }}",
+                {% endfor %}
+            ],
+            datasets: [{
+                label: '# of Votes',
+                data: [
+                {% for number in pie_chart.numbers %}
+                    {{ number }},
+                {% endfor %}
+                ],
+                backgroundColor: [
+                    'rgb(0, 255, 0)',
+                    'rgb(255, 255, 0)',
+                    'rgb(255, 0, 0)'
+                ],
+                borderWidth: 0
+            }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+{% endblock %}

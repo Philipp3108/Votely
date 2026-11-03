@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="bg-gray-900">
+    <nav class="relative flex items-center h-14 px-6 bg-gray-900 border-b border-gray-800 shadow-lg">
+        <a href="/" class="flex items-center gap-2 text-white">
+            <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="Votely logo"
+            class="h-7 w-auto"
+            >
+            <p class="text-lg font-semibold">Votely</p>
+        </a>
+        <div class="absolute left-1/2 -translate-x-1/2 flex gap-8">
+            {% if session["user_id"] %}
+                <a href="/dashboard" class="text-sm text-gray-400 hover:text-white">
+                    Dashboard
+                </a>
+            {% endif %}
+        </div>
+        <div class="ml-auto">
+            {% if session["user_id"] %}
+                    <a href="/logout" class="text-sm text-gray-400 hover:text-white">
+                        Logout <span aria-hidden="true">&rarr;</span>
+                    </a>
+            {% else %}
+                <a href="/login" class="text-sm text-gray-400 hover:text-white mx-2">
+                    Login <span aria-hidden="true">&rarr;</span>
+                </a>
+                <a href="/register" class="text-sm text-gray-400 hover:text-white mx-2">
+                    Register <span aria-hidden="true">&rarr;</span>
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+    {% block main %}{% endblock %}
+    <footer class="fixed bottom-0 bg-gray-900 text-gray-400 h-14 w-full px-4 border-t border-gray-800 shadow-lg flex items-center justify-between">
+        <p class="text-sm">
+            © 2026 <a href="https://philippbrehm.com" class="hover:text-white">Philipp Brehm</a>
+        </p>
+
+        <ul class="flex items-center gap-4 text-lg">
+            <a href="https://www.instagram.com/philipp.brehm" class="hover:text-white"><i style="font-size:24px" class="fa">&#xf16d;</i></a>
+            <a href="https://www.youtube.com/@philippb_fn" class="hover:text-white"><i style="font-size:24px" class="fa">&#xf167;</i></a>
+            <a href="https://github.com/Philipp3108/" class="hover:text-white"><i style="font-size:24px" class="fa">&#xf09b;</i></a>
+        </ul>
+    </footer>
+</body>
+</html>

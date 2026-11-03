@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+{% block main %}
+    <h1 class="flex justify-center mt-[20vh] text-white text-3xl">
+        {{ message }}
+    </h1>
+    <img src="{{ url_for('static', filename='sad_hamster_meme.png') }}" alt="" class="mx-auto object-obtain h-[20vh] mt-8">
+{% endblock %}
